@@ -8,6 +8,11 @@ CORS(app)
 
 VALID_API_KEY = os.environ.get('API_KEY', 'my_local_secret_key')
 
+@app.route('/ping', methods=['GET'])
+def keep_alive_ping():
+    status_response = {"status": "Server is awake and running smoothly!"}
+    return jsonify(status_response), 200
+
 @app.route('/translate', methods=['POST'])
 def translate_text():
     client_api_key = request.headers.get('x-api-key')

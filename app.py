@@ -1,10 +1,21 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 from deep_translator import GoogleTranslator
+import os
 
 app = Flask(__name__)
+CORS(app)
+
+VALID_API_KEY = os.environ.get('API_KEY', 'my_local_secret_key')
 
 @app.route('/translate', methods=['POST'])
 def translate_text():
+    client_api_key = request.headers.get('x-api-key')
+
+    if client_api_key != VALID_API_KEY:
+        error_response = {"error":"Unauthorized: Invalid or missing API Key"}
+        return jsonify(error_response), 401
+
     request_data = request.get_json()
 
     if not request_data:
